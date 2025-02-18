@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ntr.h": "c",
+        "dddmp.h": "c",
+        "cuddint.h": "c"
+    }
+}
