@@ -1,7 +1,8 @@
 {
-    "files.associations": {
-        "ntr.h": "c",
-        "dddmp.h": "c",
-        "cuddint.h": "c"
+    "workbench.colorCustomizations": {
+        "statusBar.foreground": "#ffffff",
+        "statusBar.debuggingForeground": "#ffffff",
+        "minimap.background": "#00000000",
+        "scrollbar.shadow": "#00000000"
     }
 }

@@ -5,20 +5,97 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "apps",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/apps/main",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "C/C++ Debug (gdb Launch)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nanotrav/nanotrav",
+            "args": [
+                "-p",
+                "1",
+                "-ordering",
+                "dfs",
+                "-autodyn",
+                "-automethod",
+                "sifting",
+                "-reordering",
+                "sifting",
+                "-drop",
+                "${workspaceFolder}/nanotrav/C880.blif"
+            ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
+
+
+        
+        {
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
             "program": "${workspaceFolder}/nanotrav/nanotrav",
             "args": [
-                "-reordering",
-                "win2",
+                // "-reordering",
+                // "sifting",
+                "-automethod",      // 设定动态最小化使用哪种算法策略
+                "sifting",
                 "-autodyn",
                 // "-p",
                 // "1",
                 // "-envelope",
-                "${workspaceFolder}/nanotrav/C17.blif"
+                "${workspaceFolder}/nanotrav/C880.blif"
             ],
             "cwd": "${workspaceFolder}"
         },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Apps",
+            "program": "${workspaceFolder}/apps/main",
+            "args": [
+                "${workspaceFolder}/apps/blifs/C17.blif"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "cuddtest",
+            "program": "${workspaceFolder}/cudd/testcudd",
+            "args": [
+                "-D",
+                "-a",
+                "4",
+                "${workspaceFolder}/cudd/r7x8.1.mat",
+            ],
+            "cwd": "${workspaceFolder}"
+        }
     ]
 }

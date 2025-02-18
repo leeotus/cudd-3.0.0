@@ -139,7 +139,9 @@ Cudd_ReduceHeap(
     unsigned long localTime;
 
     /* Don't reorder if there are too many dead nodes. */
-    if (table->keys - table->dead < (unsigned) minsize)
+	// table->keys: number of BDD nodes
+	// table->dead: total number of dead BDD nodes
+    if (table->keys - table->dead < (unsigned) minsize)		// 如果BDD的节点数小于这个值,则不需要重排
 	return(1);
 
     if (heuristic == CUDD_REORDER_SAME) {
@@ -157,14 +159,14 @@ Cudd_ReduceHeap(
     localTime = util_cpu_time();
 
     /* Run the hook functions. */
-    hook = table->preReorderingHook;
+    hook = table->preReorderingHook;		// 在cuddAPI.c的3615行的Cudd_StdPreReordHook()函数
     while (hook != NULL) {
 	int res = (hook->f)(table, "BDD", (void *)heuristic);
 	if (res == 0) return(0);
 	hook = hook->next;
     }
 
-    if (!ddReorderPreprocess(table)) return(0);
+    if (!ddReorderPreprocess(table)) return(0);	/* 重排序之前的预处理 */
     table->ddTotalNumberSwapping = 0;
 
     if (table->keys > table->peakLiveNodes) {
@@ -248,7 +250,7 @@ Cudd_ReduceHeap(
     }
 
     nextDyn = (table->keys - table->constants.keys + 1) *
-	      DD_DYN_RATIO + table->constants.keys;
+	      DD_DYN_RATIO + table->constants.keys;		/* 更新下一次重排序的dd大小阈值 */
     if (table->reorderings < 20 || nextDyn > table->nextDyn)
 	table->nextDyn = nextDyn;
     else

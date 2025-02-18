@@ -264,7 +264,7 @@ main(int argc, char * const *argv)
     dd = Cudd_Init(nvars,0,nslots,cacheSize,maxMemory);
     one = DD_ONE(dd);
     dd->groupcheck = (Cudd_AggregationType) groupcheck;
-    if (autodyn) Cudd_AutodynEnable(dd,CUDD_REORDER_SAME);
+    if (autodyn) Cudd_AutodynEnable(dd,CUDD_REORDER_SAME);      // 采用和普通重排序一样的排序方案
 
     /* Open input file. */
     fp = open_file(file, "r");

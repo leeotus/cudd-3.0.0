@@ -176,7 +176,7 @@ Ntr_buildDDs(
 	/* First assign variables to inputs if the order is provided.
 	** (Either in the .blif file or in an order file.)
 	*/
-	if (option->ordering == PI_PS_FROM_FILE) {
+	if (option->ordering == PI_PS_FROM_FILE) {			// 按照文件给定的变量序来排序
 	    /* Follow order given in input file. First primary inputs
 	    ** and then present state variables.
 	    */

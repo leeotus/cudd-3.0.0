@@ -84,7 +84,8 @@ host_triplet = x86_64-unknown-linux-gnu
 check_PROGRAMS = cudd/testcudd$(EXEEXT) cudd/testextra$(EXEEXT) \
 	st/testst$(EXEEXT) mtr/testmtr$(EXEEXT) \
 	dddmp/testdddmp$(EXEEXT) cplusplus/testobj$(EXEEXT) \
-	cplusplus/testmulti$(EXEEXT) nanotrav/nanotrav$(EXEEXT)
+	cplusplus/testmulti$(EXEEXT) nanotrav/nanotrav$(EXEEXT) apps/main$(EXEEXT) \
+
 DIST_COMMON = $(top_srcdir)/cudd/Included.am \
 	$(top_srcdir)/util/Included.am $(top_srcdir)/st/Included.am \
 	$(top_srcdir)/epd/Included.am $(top_srcdir)/mtr/Included.am \
@@ -368,6 +369,12 @@ dddmp_testdddmp_DEPENDENCIES = dddmp/libdddmp.la \
 am_mtr_testmtr_OBJECTS = mtr/mtr_testmtr-testmtr.$(OBJEXT)
 mtr_testmtr_OBJECTS = $(am_mtr_testmtr_OBJECTS)
 mtr_testmtr_DEPENDENCIES = cudd/libcudd.la
+
+# todo
+apps_OBJECTS = \
+	apps/main.$(OBJEXT)
+
+#  nanotrav的依赖
 am_nanotrav_nanotrav_OBJECTS =  \
 	nanotrav/nanotrav_nanotrav-bnet.$(OBJEXT) \
 	nanotrav/nanotrav_nanotrav-chkMterm.$(OBJEXT) \
@@ -379,6 +386,11 @@ am_nanotrav_nanotrav_OBJECTS =  \
 	nanotrav/nanotrav_nanotrav-ntrShort.$(OBJEXT) \
 	nanotrav/nanotrav_nanotrav-ntrZddTest.$(OBJEXT)
 nanotrav_nanotrav_OBJECTS = $(am_nanotrav_nanotrav_OBJECTS)
+
+# 链接库:
+apps_DEPENDENCIES = dddmp/libdddmp.la \
+	cudd/libcudd.la
+
 nanotrav_nanotrav_DEPENDENCIES = dddmp/libdddmp.la \
 	cudd/libcudd.la
 #nanotrav_nanotrav_DEPENDENCIES = cudd/libcudd.la
@@ -442,14 +454,15 @@ SOURCES = $(cplusplus_libobj_la_SOURCES) $(cudd_libcudd_la_SOURCES) \
 	$(cplusplus_testobj_SOURCES) $(cudd_testcudd_SOURCES) \
 	$(cudd_testextra_SOURCES) $(dddmp_testdddmp_SOURCES) \
 	$(mtr_testmtr_SOURCES) $(nanotrav_nanotrav_SOURCES) \
-	$(st_testst_SOURCES)
+	$(st_testst_SOURCES) $(apps_SOURCES)
 DIST_SOURCES = $(am__cplusplus_libobj_la_SOURCES_DIST) \
 	$(am__cudd_libcudd_la_SOURCES_DIST) \
 	$(am__dddmp_libdddmp_la_SOURCES_DIST) \
 	$(cplusplus_testmulti_SOURCES) $(cplusplus_testobj_SOURCES) \
 	$(cudd_testcudd_SOURCES) $(cudd_testextra_SOURCES) \
 	$(dddmp_testdddmp_SOURCES) $(mtr_testmtr_SOURCES) \
-	$(nanotrav_nanotrav_SOURCES) $(st_testst_SOURCES)
+	$(nanotrav_nanotrav_SOURCES) $(st_testst_SOURCES) \
+	$(apps_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -935,9 +948,19 @@ nanotrav_nanotrav_SOURCES = nanotrav/bnet.h nanotrav/ntr.h \
   nanotrav/ntr.c nanotrav/ntrHeap.c nanotrav/ntrMflow.c nanotrav/ntrShort.c \
   nanotrav/ntrZddTest.c
 
+# 添加自己的测试文件
+apps_SOURCES = apps/main.c
+
+apps_CPPFLAGS = -I$(top_srcdir)/cudd -I$(top_srcdir)/mtr \
+  -I$(top_srcdir)/epd -I$(top_srcdir)/st -I$(top_srcdir)/dddmp \
+  -I$(top_srcdir)/util
+
 nanotrav_nanotrav_CPPFLAGS = -I$(top_srcdir)/cudd -I$(top_srcdir)/mtr \
   -I$(top_srcdir)/epd -I$(top_srcdir)/st -I$(top_srcdir)/dddmp \
   -I$(top_srcdir)/util
+
+apps_LDADD = dddmp/libdddmp.la \
+	cudd/libcudd.la
 
 nanotrav_nanotrav_LDADD = dddmp/libdddmp.la \
 	cudd/libcudd.la
@@ -1365,6 +1388,11 @@ mtr/mtr_testmtr-testmtr.$(OBJEXT): mtr/$(am__dirstamp) \
 mtr/testmtr$(EXEEXT): $(mtr_testmtr_OBJECTS) $(mtr_testmtr_DEPENDENCIES) $(EXTRA_mtr_testmtr_DEPENDENCIES) mtr/$(am__dirstamp)
 	@rm -f mtr/testmtr$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(mtr_testmtr_OBJECTS) $(mtr_testmtr_LDADD) $(LIBS)
+
+apps/$(am__dirstamp):
+	@$(MKDIR_P) apps
+	@: > apps/$(am__dirstamp)
+
 nanotrav/$(am__dirstamp):
 	@$(MKDIR_P) nanotrav
 	@: > nanotrav/$(am__dirstamp)
@@ -1393,6 +1421,13 @@ nanotrav/nanotrav_nanotrav-ntrZddTest.$(OBJEXT):  \
 nanotrav/nanotrav$(EXEEXT): $(nanotrav_nanotrav_OBJECTS) $(nanotrav_nanotrav_DEPENDENCIES) $(EXTRA_nanotrav_nanotrav_DEPENDENCIES) nanotrav/$(am__dirstamp)
 	@rm -f nanotrav/nanotrav$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(nanotrav_nanotrav_OBJECTS) $(nanotrav_nanotrav_LDADD) $(LIBS)
+
+# for apps:
+apps/main$(EXEEXT): $(apps_OBJECTS) $(apps_DEPENDENCIES) apps/$(am__dirstamp)
+	@rm -f apps/main$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(apps_OBJECTS) $(apps_LDADD) $(LIBS)
+
+
 st/st_testst-testst.$(OBJEXT): st/$(am__dirstamp) \
 	st/$(DEPDIR)/$(am__dirstamp)
 
@@ -2364,6 +2399,14 @@ nanotrav/nanotrav_nanotrav-chkMterm.obj: nanotrav/chkMterm.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(nanotrav_nanotrav_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o nanotrav/nanotrav_nanotrav-chkMterm.obj `if test -f 'nanotrav/chkMterm.c'; then $(CYGPATH_W) 'nanotrav/chkMterm.c'; else $(CYGPATH_W) '$(srcdir)/nanotrav/chkMterm.c'; fi`
 
+# 仿照nanotrav写自己的项目:
+apps/main.o: apps/main.c
+# -MT 指定目标文件的生成路径
+# -MF 指定依赖文件的生产路径
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(apps_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apps/main.o -MD -MP -MF apps/$(DEPDIR)/main.Tpo -c -o apps/main.o `test -f 'apps/main.c' || echo '$(srcdir)/'`apps/main.c
+	$(AM_V_at)$(am__mv) apps/$(DEPDIR)/main.Tpo apps/$(DEPDIR)/main.Po
+# 方便起见这里不写 apps/main.obj的生成指令,即没有考虑在windows上实现
+
 nanotrav/nanotrav_nanotrav-main.o: nanotrav/main.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(nanotrav_nanotrav_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT nanotrav/nanotrav_nanotrav-main.o -MD -MP -MF nanotrav/$(DEPDIR)/nanotrav_nanotrav-main.Tpo -c -o nanotrav/nanotrav_nanotrav-main.o `test -f 'nanotrav/main.c' || echo '$(srcdir)/'`nanotrav/main.c
 	$(AM_V_at)$(am__mv) nanotrav/$(DEPDIR)/nanotrav_nanotrav-main.Tpo nanotrav/$(DEPDIR)/nanotrav_nanotrav-main.Po
@@ -2966,6 +3009,9 @@ check-am: all-am
 	  $(dist_check_DATA)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
+.PHONY: apps
+apps:
+	${MAKE} ${AM_MAKEFLAGS} apps/main${EXEEXT}
 all-am: Makefile $(LTLIBRARIES) $(HEADERS) config.h
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
@@ -3022,7 +3068,11 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 clean-local:
-clean: clean-am
+clean: clean-am clean-apps
+
+clean-apps:
+	-rm -f apps/main.o
+	-rm -f apps/main
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
 	clean-libtool clean-local clean-noinstLTLIBRARIES \

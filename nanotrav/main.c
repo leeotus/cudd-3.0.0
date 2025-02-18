@@ -133,7 +133,7 @@ main(
 #if defined(_WIN32) && defined(_TWO_DIGIT_EXPONENT)
     (void) _set_output_format(_TWO_DIGIT_EXPONENT);
 #endif
-    option = mainInit();
+    option = mainInit();			// 初始化options
     ntrReadOptions(argc,argv,option);
     pr = option->verb;
     reencoded = option->reordering == CUDD_REORDER_LINEAR ||
@@ -567,8 +567,8 @@ mainInit(
     option->slots          = CUDD_UNIQUE_SLOTS;
     option->ordering       = PI_PS_FROM_FILE;
     option->orderPiPs      = NULL;
-	// 这里修改动态最小化:
     option->reordering     = CUDD_REORDER_NONE;
+	// 这里修改动态最小化:
     option->autoMethod     = CUDD_REORDER_SIFT;
     option->autoDyn        = 0;
 	// option->autoMethod 	   = CUDD_REORDER_WINDOW2;
