@@ -169,10 +169,10 @@ int main() {
     // 初始化 CUDD 管理器
     DdManager *dd = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
     Cudd_AutodynEnable(dd, CUDD_REORDER_SIFT);
-    Cudd_ReorderingReporting(dd);
 
     // 创建半加器的 BDD
     DdNode **outputs = createHalfAdderBDD(dd);
+    Cudd_ReduceHeap(dd, CUDD_REORDER_SIFT, 1);
 
     // 导出为 DOT 文件
     toDot(dd, outputs);

@@ -3009,9 +3009,14 @@ check-am: all-am
 	  $(dist_check_DATA)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-.PHONY: apps
+.PHONY: apps apps-clean
 apps:
 	${MAKE} ${AM_MAKEFLAGS} apps/main${EXEEXT}
+
+apps-clean:
+	-rm -f apps/main${EXEEXT}
+	-rm apps/*.o
+
 all-am: Makefile $(LTLIBRARIES) $(HEADERS) config.h
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
@@ -3068,11 +3073,7 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 clean-local:
-clean: clean-am clean-apps
-
-clean-apps:
-	-rm -f apps/main.o
-	-rm -f apps/main
+clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
 	clean-libtool clean-local clean-noinstLTLIBRARIES \
